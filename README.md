@@ -1,10 +1,53 @@
- Ce projet vise à mettre en place un réseau client-serveur. Une fois que le serveur sera démarré, plusieurs clients pourront s’y connecter pour s’envoyer des messages entre clients. Une fois le code serveur lancé il est demandé l’adresse IP a utilisé pour le serveur une fois cette adresse fourni le serveur démarre sur le port ‘’1234’’ avec l’adresse spécifie et attente la connexion d’un client. En compilant maintenant le code Client il est demandé l’adresse du serveur au quel se connecter une fois cette adresse spécifié le client se connecte et il lui est demander d’entre son pseudo après cela il peut voir et envoyer des messages a d’autre client comme lui. Si un client ferme sa console pour raison ou une autre le serveur afficher le message ‘’{pseudo} est déconnecté.
+# Projet de Réseau Client-Serveur
 
- Ce code est un exemple d’un serveur de chat  multithread en C#. Voici une description de la logique implémentée : 
-  1. Initialisation du serveur : Le serveur demande à l’utilisateur d’entrer l’adresse IP du serveur ou d’utiliser l’adresse locale par défaut (127.0.0.1). Il crée ensuite un ‘’TcpListener’’ sur cette adresse et le port 1234, puis démarre le serveur. 
-  2. Acceptation des connexions clients : Le serveur entre dans une boucle infinie où il attend et accepte les connexions entrantes des clients. Pour chaque client qui se connecte, il ajoute le ‘’TcpClient’’ à une liste de clients et crée un nouveau thread pour gérer la communication avec ce client. 
-  3. Gestion des clients : Chaque thread client exécute la méthode ‘’HandleClient’’, qui gère la communication avec un client spécifique. Il envoie d’abord une demande de pseudo au client, puis lit la réponse du client et l’utilise comme pseudo. Il envoie ensuite une confirmation de connexion au client. 
-  4. Réception et diffusion des messages : Le thread client entre dans une boucle où il lit les messages entrants du client. Pour chaque message reçu, il appelle la méthode ‘’BroadcastMessage’’ pour diffuser le message à tous les autres clients. 
-  5. Gestion des déconnexions : Si une exception se produit (par exemple, si le client se déconnecte inopinément), le thread client ferme la connexion avec le client, le retire de la liste des clients et diffuse un message aux autres clients pour les informer de la déconnexion. 
-  6. Diffusion des messages : La méthode ‘’BroadcastMessage’’ prend un message et un client (le client qui a envoyé le message) en paramètres. Elle envoie le message à tous les clients, à l’exception de celui qui a envoyé le message. En résumé, ce code met en œuvre un serveur de chat multithread simple qui peut gérer plusieurs clients simultanément. Chaque client est géré dans son propre thread, ce qui permet au serveur de continuer à accepter de nouvelles connexions pendant qu’il traite les requêtes existantes.
- 
+Ce projet vise à mettre en place un réseau client-serveur permettant à plusieurs clients de communiquer entre eux via un serveur central.
+
+## Fonctionnalités Principales
+
+### Serveur
+- 🚀 **Initialisation** : 
+  - Demande l'adresse IP du serveur (127.0.0.1 par défaut)
+  - Crée un `TcpListener` sur le port **1234**
+  - Attend les connexions clientes
+
+### Client
+- 💻 **Connexion** :
+  - Demande l'adresse du serveur
+  - Saisie du pseudo utilisateur
+  - Échange de messages en temps réel
+
+### Gestion des Connexions
+- 🔄 **Multithread** : Chaque client géré dans un thread séparé
+- 📢 **Diffusion** : Messages relayés à tous les clients connectés
+- ❌ **Déconnexion** : Notification automatique lorsqu'un client quitte
+
+## Architecture Technique
+
+```csharp
+// Exemple de structure clé
+TcpListener server = new TcpListener(IPAddress.Parse(ip), 1234);
+```
+
+1. **Initialisation Serveur**
+   - Création du `TcpListener`
+   - Démarrage de l'écoute
+
+2. **Boucle Principale**
+   ```mermaid
+   graph TD
+     A[AcceptClient] --> B[CréerThread]
+     B --> C[GérerClient]
+   ```
+
+3. **Gestion Client**
+   - 📝 Demande de pseudo
+   - 📨 Réception/diffusion des messages
+   - 🔌 Gestion des déconnexions
+
+## Cas d'Usage
+
+1. Client A se connecte → "PseudoA est connecté"
+2. Client B envoie "Hello" → Tous les clients voient "PseudoB: Hello"
+3. Client A se déconnecte → "PseudoA est déconnecté"
+
+> **Note** : Solution optimale pour des communications simples entre multiples clients avec une architecture légère.
